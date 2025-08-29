@@ -1,0 +1,27 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+#Bu kod rx'in rastgele aldığı verileri işer.
+path = "capture.dat"
+# float32 I/Q -> complex64
+iq = np.fromfile(path, dtype=np.complex64)
+
+print("Ornek sayisi:", iq.size)
+
+# Zaman alanı (ilk 2000 örnek)
+plt.figure()
+plt.plot(np.real(iq[:2000]))
+plt.title("I (ilk 2000 örnek)")
+plt.xlabel("n"); plt.ylabel("Genlik")
+plt.show()
+
+# Hızlı spektrum (ortalama alınmamış, kaba bakış)
+N = 131072 if iq.size >= 131072 else iq.size
+win = np.hanning(N)
+S = np.fft.fftshift(np.fft.fft(iq[:N]*win))
+psd = 20*np.log10(np.abs(S)+1e-12)
+plt.figure()
+plt.plot(psd)
+plt.title("Genlik Spektrumu (dB)")
+plt.xlabel("Frekans bin"); plt.ylabel("dB")
+plt.show()
