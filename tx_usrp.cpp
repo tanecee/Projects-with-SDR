@@ -1,3 +1,6 @@
+/*Burada, verici olarak kullanılan USRP-2901 ile 100 milisaniyede bir periyodik olarak belirlenen bir 
+sinyal oluşturmak amaçlanmıştır.*/
+
 #include <uhd/usrp/multi_usrp.hpp>
 #include <uhd/utils/thread.hpp>
 #include <uhd/utils/safe_main.hpp>
@@ -12,17 +15,19 @@
 #include <iomanip>
 #include <sstream>
 
+
 int UHD_SAFE_MAIN(int argc, char* argv[]) {
     std::string device_args = "serial=327AB4A"; 
-    std::string subdev = "A:A";
-    std::string ant = "TX/RX"; 
-    std::string ref = "internal";
+    std::string subdev = "A:A"; //A kartının A kanalı
+    std::string ant = "TX/RX"; //Ortak TX/RX portu
+    std::string ref = "internal"; //Zamanlama referansı olarak dahili saat ("internal") kullanılır.
     
-    double rate = 1e6; 
+    double rate = 1e6; //Baseband Örnekleme Hızı
     double freq = 3.1e9;
     double gain = 20;     
-    double period = 0.1; // 100 ms periyot
-    
+    double period = 0.1; // Her 100 ms’de bir paket gönderme periyodu
+
+    //Cihaz başlatılır.
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make(device_args);
     
     usrp->set_tx_rate(rate);
@@ -30,18 +35,19 @@ int UHD_SAFE_MAIN(int argc, char* argv[]) {
     usrp->set_tx_gain(gain);
     usrp->set_tx_subdev_spec(subdev);
     usrp->set_tx_antenna(ant);
-    
+
+    //Cihaz saatini 0’a sıfırlar. Zaman damgalı (timed) gönderiler bu saatle planlanır.
     usrp->set_time_now(uhd::time_spec_t(0.0));
     
-    uhd::stream_args_t stream_args("fc32", "sc16");
-    uhd::tx_streamer::sptr tx_stream = usrp->get_tx_stream(stream_args);
+    uhd::stream_args_t stream_args("fc32", "sc16"); //Veri formatı belirtildi.
+    uhd::tx_streamer::sptr tx_stream = usrp->get_tx_stream(stream_args); //Verici akışı başlatılır.
     
-    const double wave_freq = 1000; // 1 kHz
+    const double wave_freq = 1000; // 1 kHz:Gönderilecek sinyalin frekansı
     const size_t spb = 1024; // Buffer başına örnek sayısı
     
     std::vector<std::complex<float>> buff(spb);
     for (size_t i = 0; i < spb; i++) {
-        double t = i / rate;
+        double t = i / rate; //Zaman, örnek indisinin örnekleme oranına bölünmesiyle hesaplanır.
         buff[i] = std::complex<float>(
             std::cos(2 * M_PI * wave_freq * t),
             std::sin(2 * M_PI * wave_freq * t)
@@ -49,10 +55,11 @@ int UHD_SAFE_MAIN(int argc, char* argv[]) {
     }
     
     uhd::tx_metadata_t md;
-    md.start_of_burst = true;
-    md.end_of_burst = true;
-    md.has_time_spec = true;
-    
+    md.start_of_burst = true; //Veri bloğunun başlangıcını işaretler.
+    md.end_of_burst = true; //Veri bloğunun sonunu işaretler.
+    md.has_time_spec = true; //Zaman damgası kullanılacağını belirtir.
+
+    //İlk sinyal gönderimi, mevcut zamana 2 saniye eklenerek başlar.
     uhd::time_spec_t time_stamp = usrp->get_time_now() + uhd::time_spec_t(2.0);
     
     std::cout << "Sinyal gönderimi başlıyor..." << std::endl;
@@ -83,7 +90,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[]) {
             
         }
     }
-    catch (const std::exception& e) {
+    catch (const std::exception& e) { //Hataları yakalar ve konsola yazdırır.
         std::cerr << "Hata: " << e.what() << std::endl;
     }
     
