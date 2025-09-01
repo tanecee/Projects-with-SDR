@@ -1,8 +1,10 @@
-% PlutoSDR - Tek seferlik 1 saniye IQ kaydı (.dot) + Analiz
-
+%{
+ Burada alıcıdan gönderilen sinyalin vericide algılanıp bu verinin 
+ 1 saniyesini kaydedip .dot uzantılı dosyaya kaydedilmesi amaçlanmıştır.
+%}
 clear; clc;
 
-% ---- PlutoSDR ayarları ----
+% PlutoSDR ayarları 
 rx = comm.SDRRxPluto( ...
     'RadioID','sn:1044734c9605001104000100d5934f698c', ...
     'CenterFrequency', 3.1e9, ...
@@ -14,17 +16,17 @@ rx = comm.SDRRxPluto( ...
 rx.ShowAdvancedProperties = true;
 rx.Gain = 20;   % Manual modda kazanç
 
-% ---- Kayıt ayarları ----
+%Kayıt ayarları
 recordDuration = 1;            % saniye
 Fs = rx.BasebandSampleRate;
 N  = Fs * recordDuration;      % toplam örnek sayısı
-outDir = 'recorded_data';
+outDir = 'recorded_data'; %Kaydedilecek dosyanın adı
 if ~exist(outDir,'dir'); mkdir(outDir); end
 
 fprintf('Pluto RX basladi: Fc=%.1f MHz, Fs=%.1f MHz\n', ...
     rx.CenterFrequency/1e6, Fs/1e6);
 
-% ---- 1 saniyelik veri topla ----
+% 1 saniyelik veri toplanır.
 buf = complex(zeros(N,1));
 idx = 0;
 while idx < N
@@ -34,7 +36,7 @@ while idx < N
     idx = idx + take;
 end
 
-% ---- Dosyaya yaz ----
+%Dosyaya yaz
 ts = datetime('now');
 ts_str = datestr(ts,'yyyymmdd_HHMMSS');
 outFile = fullfile(outDir, sprintf('usrp_rx_%s.dot', ts_str));
@@ -116,4 +118,5 @@ function snr = estimateSNR(data)
     signal_power = mean(abs(data).^2);
     noise_floor  = median(abs(data).^2); % Noise floor tahmini
     snr = 10*log10(signal_power/noise_floor);
+
 end
