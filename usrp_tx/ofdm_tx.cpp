@@ -216,8 +216,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[]) {
     
     OFDMParameters p;
     double rate = p.sample_rate; // OFDM sample rate'i kullanılır
-    double freq = 3.1e9;
-    double gain = 40;     
+    double freq = 3.3e9;
+    double gain = 70;     
     double period = 0.1; // 100 ms periyot
     
     // USRP'yi başlatma
@@ -249,7 +249,10 @@ int UHD_SAFE_MAIN(int argc, char* argv[]) {
 
     
     uhd::time_spec_t time_stamp = usrp->get_time_now() + uhd::time_spec_t(2.0);
-    
+
+    std::cout << "WF:" << p.wformLength <<std::endl;
+    std::cout << "Length in seconds: " << static_cast<double>(p.wformLength) / p.sample_rate << " s" << std::endl;
+
     std::cout << "OFDM sinyali gönderimi başlıyor..." << std::endl;
     std::cout << "Zaman damgaları:" << std::endl;
     
@@ -268,6 +271,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[]) {
             double full_seconds = time_stamp.get_full_secs();
             double frac_seconds = time_stamp.get_frac_secs();
             double total_seconds = full_seconds + frac_seconds;
+            
             
             std::cout << "OFDM sinyali gönderildi: " 
                       << std::fixed << std::setprecision(6) << total_seconds 
