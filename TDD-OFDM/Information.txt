@@ -1,0 +1,2 @@
+Burada SDR kullanılarak OFDM sinyali oluşturuldu.
+Sinyaller, TDD(Time Division Duplex) modunda oluşturup uplink(veri gönderme) dowlink(veri alma) olarak yapılandırıldı.
