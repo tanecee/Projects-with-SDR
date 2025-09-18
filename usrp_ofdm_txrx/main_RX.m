@@ -30,14 +30,14 @@ function main_RX()
                     rxFrame = rxSig(start_idx:start_idx+p.wformLength-1);
 
                     % OFDM çözümü
-                    [~, rx_bits, rx_symbols] = ofdmRx(rxFrame);
+                    [rx_bits, rx_symbols] = ofdmRx(rxFrame);
 
                     % Kaydet
                     save('rxFrame.mat','rxFrame','rx_bits','rx_symbols');
                     disp('Frame decode edildi ve kaydedildi.');
                     
                     % Tek seferlik çalıştırmak istersen break koy
-                    % break;
+                    %break;
                 else
                     disp('Frame tamamı bufferda değil, sonraki frame bekleniyor.');
                 end
