@@ -152,3 +152,5 @@ if __name__ == "__main__":
         zc_len=args.zc_len,
         show_time=not args.no_time,
     )
+
+#Bu kodu command window ile python3 ofdm_tx_analyzer.py --file tx_ofdm_suan.dot --fs 20e6 --nfft 256 --cp 64 --nsym 14 --zc_len 255 ile cagirip kaydettiğiniz sinyalin analizini yapabilirsiniz.
