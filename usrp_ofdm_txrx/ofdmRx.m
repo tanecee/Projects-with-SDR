@@ -1,11 +1,7 @@
-function [num_errors, rx_bits, rx_data_symbols] = ofdmRx(rx_data, tx_bits)
+function [rx_data, rx_data_symbols] = ofdmRx(rx_data)
     p = parametersOFDM();
 
-    if nargin < 2
-        tx_bits = [];
-    end
 
-    % --- Step 3: Residual CFO estimation ---
     phase_offsets = zeros(p.Nsym, 1);
     for i = 1:p.Nsym
         sym_start_idx = (i-1)*(p.Nfft + p.cpLength) + 1;
