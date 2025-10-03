@@ -1,7 +1,0 @@
-Burada SDR kullanılarak OFDM sinyali oluşturuldu.
-Sinyaller, TDD(Time Division Duplex) modunda oluşturup uplink(veri gönderme) dowlink(veri alma) olarak yapılandırıldı.
-Bu dosyadaki kodlar ortak parametreleri ve fonksiyonları kullanan header dosyalarından oluşur.
-TDD (Time Division Duplexing): Uplink ve downlink iletişiminin aynı frekans bandını ancak farklı zaman dilimlerinde kullanmasıdır. Bir zaman aralığında cihaz veri gönderirken (uplink), diğer zaman aralığında veri alır (downlink).
-OFDM (Orthogonal Frequency Division Multiplexing): Yüksek veri hızlarını ve çok yollu yayılıma karşı direnci sağlamak için geniş bir bant genişliğini birçok daraltılmış, birbirine dik alt taşıyıcıya bölen bir modülasyon tekniğidir.
-Bir TDD OFDM sistemi için temel yapı, bir verici (TX) ve bir alıcı (RX) tarafını içermelidir. TDD modunda, aynı USRP cihazı hem verici hem de alıcı olarak hareket edebilir, ancak bunu belirli bir zamanlama ile yapmalıdır.
-! Uplink - Downlink esnasında; vericiyi kapatıp alıcıyı açma arasındaki gecikme, TDD performansı için önemlidir. Bu sürenin mümkün olduğunca kısa olması hedeflenir.
